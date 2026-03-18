@@ -36,7 +36,7 @@
         #intro h1 {
             font-size: 4rem;
             font-weight: 900;
-            background: linear-gradient(45deg, #fff, #e0e0e0);
+            background: linear-gradient(45deg, #fff, #1b0647);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: glitch 0.5s infinite alternate;
@@ -90,6 +90,8 @@
             list-style: none;
             justify-content: center;
             gap: 2rem;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            pointer-events: auto;
         }
 
         nav a {
@@ -113,6 +115,50 @@
 
         nav a:hover::after {
             width: 100%;
+        }
+
+        /* Mobile navigation toggle */
+        #nav-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            width: 2.5rem;
+            height: 2.5rem;
+            position: absolute;
+            top: 1.5rem;
+            right: 5%;
+            z-index: 1100;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 0;
+        }
+
+        #nav-toggle span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background: #fff;
+            border-radius: 999px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        nav.open #nav-toggle span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+
+        nav.open #nav-toggle span:nth-child(2) {
+            opacity: 0;
+        }
+
+        nav.open #nav-toggle span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+
+        nav.open ul {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
         }
 
         /* Hero Section */
@@ -410,6 +456,38 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            nav {
+                padding: 1rem 2rem;
+            }
+
+            #nav-toggle {
+                display: flex;
+            }
+
+            nav ul {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(10, 10, 10, 0.95);
+                padding: 1rem 2rem 2rem;
+                transform: translateY(-110%);
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            nav ul li {
+                text-align: center;
+            }
+
+            nav ul a {
+                display: block;
+                padding: 0.75rem 0;
+            }
+
             .hero {
                 flex-direction: column-reverse;
                 text-align: center;
@@ -426,11 +504,6 @@
 
             .cta-buttons {
                 justify-content: center;
-            }
-
-            nav ul {
-                flex-wrap: wrap;
-                gap: 1rem;
             }
 
             .section-title {
@@ -466,7 +539,12 @@
 
     <!-- Navigation -->
     <nav id="nav">
-        <ul>
+        <button id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul id="nav-menu">
             <li><a href="#home">Accueil</a></li>
             <li><a href="#skills">Compétences</a></li>
             <li><a href="#projects">Projets</a></li>
@@ -662,6 +740,23 @@
             });
         });
 
+        // Mobile nav toggle
+        const navToggle = document.getElementById('nav-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        navToggle.addEventListener('click', () => {
+            const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+            navToggle.setAttribute('aria-expanded', String(!expanded));
+            document.getElementById('nav').classList.toggle('open');
+        });
+
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('nav').classList.remove('open');
+                navToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+
         // Scroll Reveal
         const reveals = document.querySelectorAll('.reveal');
         const revealOnScroll = () => {
@@ -689,7 +784,7 @@
             }
         });
 
-        // Load Profile Image (Tu devras uploader ton image sur GitHub)
+        // Load Profile Image 
         // Pour l'instant, je mets un placeholder
         const profileImg = document.getElementById('profile-img');
         // Remplace ce lien par le chemin vers ton image sur GitHub
